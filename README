@@ -1,0 +1,44 @@
+h1. Overview
+
+jddl is a lightweight and simple java file downloader library, that makes it very easy and trivial to direct-download multiple files over Http. 
+
+h1. Usage
+
+jddl is a multi-threaded API capable of parallel-downloading multiple files and uses a custom event handler to update the download status. Below is a basic example.
+
+<pre>                                                                           
+<code>
+ //Create a DirectDownloader instance
+ DirectDownloader dd = new DirectDownloader();
+ String file = "http://someserver/somefile.zip"
+ String out = "somefile.zip"
+
+ // Add downloads to be downloaded
+ dd.download( new DownloadTask( new URL( file ), new FileOutputStream( out ), new DownloadListener() {
+   public void onUpdate(int bytes, int totalDownloaded) {
+      // update progress bar etc.
+   }
+
+   public void onStart(int size) {
+      System.out.println( "Downloading " + out + " of size " + size );
+   }
+
+   public void onComplete() {
+      System.out.println( out + " downloaded" );
+   }
+ } ) );
+
+ Thread t = new Thread( dd );
+ t.start();
+ t.join();
+</code>
+</pre>
+ 
+h1. Other examples  
+
+Below are some comprehensive examples of using jddl
+
+* Console example
+* Swing example
+* Android example
+
