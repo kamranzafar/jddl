@@ -34,7 +34,7 @@ jddl is a multi-threaded API capable of parallel-downloading multiple files and 
 </code>
 </pre>
  
-h1. Other examples  
+h1. Examples  
 
 Below are some comprehensive examples of using jddl
 
