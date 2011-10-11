@@ -5,6 +5,27 @@
 	<artifactId>jddl</artifactId>
 	<version>0.5</version>
 	<name>Java http file download library</name>
+
+	<developers>
+		<developer>
+			<id>kamran</id>
+			<name>Kamran Zafar</name>
+			<email>xeus.man@gmail.com
+      </email>
+			<organization>Kamran Zafar</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License</name>
+			<url>LICENSE.txt
+      </url>
+		</license>
+	</licenses>
+
 	<build>
 		<sourceDirectory>${basedir}/src/main/java
         </sourceDirectory>

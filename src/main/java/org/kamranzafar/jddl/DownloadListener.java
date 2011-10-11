@@ -26,6 +26,10 @@
 
 package org.kamranzafar.jddl;
 
+/**
+ * @author kamran
+ * 
+ */
 public interface DownloadListener {
     public void onStart(int fsize);
 

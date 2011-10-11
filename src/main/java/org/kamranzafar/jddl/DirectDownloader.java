@@ -34,6 +34,10 @@ import java.net.Proxy;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * @author kamran
+ * 
+ */
 public class DirectDownloader implements Runnable {
     private int poolSize = 3;
     private DirectDownloadThread[] dts;

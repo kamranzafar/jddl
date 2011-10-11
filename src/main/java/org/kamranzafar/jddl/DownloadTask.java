@@ -29,6 +29,10 @@ package org.kamranzafar.jddl;
 import java.io.OutputStream;
 import java.net.URL;
 
+/**
+ * @author kamran
+ * 
+ */
 public class DownloadTask {
     private URL url;
     private OutputStream outputStream;
