@@ -8,12 +8,13 @@ jddl is a multi-threaded API capable of parallel-downloading multiple files and 
 
 <pre>                                                                           
 <code>
- //Create a DirectDownloader instance
+ // Create a DirectDownloader instance
  DirectDownloader dd = new DirectDownloader();
+
  String file = "http://someserver/somefile.zip"
  String out = "somefile.zip"
 
- // Add downloads to be downloaded
+ // Add files to be downloaded
  dd.download( new DownloadTask( new URL( file ), new FileOutputStream( out ), new DownloadListener() {
    public void onUpdate(int bytes, int totalDownloaded) {
       // update progress bar etc.
@@ -28,6 +29,7 @@ jddl is a multi-threaded API capable of parallel-downloading multiple files and 
    }
  } ) );
 
+ // Start downloading
  Thread t = new Thread( dd );
  t.start();
  t.join();
@@ -36,7 +38,7 @@ jddl is a multi-threaded API capable of parallel-downloading multiple files and 
  
 h1. Examples  
 
-Below are some comprehensive examples of using jddl
+Below are some comprehensive examples of using jddl.
 
 * "Console example":https://github.com/kamranzafar/jddl/blob/master/src/test/java/org/kamranzafar/jddl/SimpleTest.java
 * "Swing example":https://github.com/kamranzafar/jddl/blob/master/src/test/java/org/kamranzafar/jddl/SwingTest.java
