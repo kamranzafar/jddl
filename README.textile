@@ -38,7 +38,7 @@ h1. Other examples
 
 Below are some comprehensive examples of using jddl
 
-* Console example
-* Swing example
+* "Console example":https://github.com/kamranzafar/jddl/blob/master/src/test/java/org/kamranzafar/jddl/SimpleTest.java
+* "Swing example":https://github.com/kamranzafar/jddl/blob/master/src/test/java/org/kamranzafar/jddl/SwingTest.java
 * Android example
 
