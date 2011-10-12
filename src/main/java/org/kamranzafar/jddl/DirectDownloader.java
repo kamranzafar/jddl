@@ -33,6 +33,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 /**
  * @author kamran
@@ -40,9 +41,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class DirectDownloader implements Runnable {
     private int poolSize = 3;
+    private int bufferSize = 2048;
+
     private DirectDownloadThread[] dts;
     private Proxy proxy;
     private final BlockingQueue<DownloadTask> tasks = new LinkedBlockingQueue<DownloadTask>();
+
+    private static Logger logger = Logger.getLogger( DirectDownloader.class.getName() );
 
     public DirectDownloader() {
     }
@@ -61,23 +66,19 @@ public class DirectDownloader implements Runnable {
     }
 
     protected class DirectDownloadThread extends Thread {
-        private int bufferSize = 1024;
+        private static final String GET = "GET";
         private final BlockingQueue<DownloadTask> tasks;
 
         public DirectDownloadThread(BlockingQueue<DownloadTask> tasks) {
             this.tasks = tasks;
         }
 
-        public DirectDownloadThread(BlockingQueue<DownloadTask> tasks, int bufferSize) {
-            this.tasks = tasks;
-            this.bufferSize = bufferSize;
-        }
-
-        protected void download(DownloadTask fdt) throws IOException {
-            HttpURLConnection conn = (HttpURLConnection) fdt.getUrl().openConnection(
+        protected void download(DownloadTask dt) throws IOException {
+            HttpURLConnection conn = (HttpURLConnection) dt.getUrl().openConnection(
                     proxy == null ? Proxy.NO_PROXY : proxy );
 
-            conn.setRequestMethod( "GET" );
+            conn.setReadTimeout( dt.getTimeout() );
+            conn.setRequestMethod( GET );
             conn.setDoOutput( true );
             conn.connect();
 
@@ -85,8 +86,8 @@ public class DirectDownloader implements Runnable {
 
             InputStream is = conn.getInputStream();
 
-            OutputStream os = fdt.getOutputStream();
-            DownloadListener listener = fdt.getListener();
+            OutputStream os = dt.getOutputStream();
+            DownloadListener listener = dt.getListener();
 
             byte[] buff = new byte[bufferSize];
             int res;
@@ -101,6 +102,15 @@ public class DirectDownloader implements Runnable {
                 total += res;
                 if (listener != null) {
                     listener.onUpdate( res, total );
+                }
+
+                synchronized (dt) {
+                    while (dt.isPaused()) {
+                        try {
+                            wait();
+                        } catch (Exception e) {
+                        }
+                    }
                 }
             }
 
@@ -135,7 +145,8 @@ public class DirectDownloader implements Runnable {
     }
 
     public void run() {
-        System.out.println( "Initializing downloader..." );
+        logger.info( "Initializing downloader..." );
+
         dts = new DirectDownloadThread[poolSize];
 
         for (DirectDownloadThread t : dts) {
@@ -143,6 +154,22 @@ public class DirectDownloader implements Runnable {
             t.start();
         }
 
-        System.out.println( "Downloader started, waiting for tasks." );
+        logger.info( "Downloader started, waiting for tasks." );
+    }
+
+    public int getPoolSize() {
+        return poolSize;
+    }
+
+    public void setPoolSize(int poolSize) {
+        this.poolSize = poolSize;
+    }
+
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
     }
 }

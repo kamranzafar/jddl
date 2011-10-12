@@ -28,12 +28,17 @@ package org.kamranzafar.jddl;
 
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.TitledBorder;
 
@@ -47,6 +52,10 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class SwingTest {
+    private static final String PAUSE = "Pause";
+    private static final String RESUME = "Resume";
+    private static final String TOTAL = "Total";
+
     // total progress bar
     private final JProgressBar totalProgressBar = new JProgressBar();
 
@@ -65,6 +74,9 @@ public class SwingTest {
         // Progress bars for individual file downloads
         JProgressBar[] progressBar = new JProgressBar[3];
 
+        // Pause/Resume buttons
+        JButton[] pauseButton = new JButton[3];
+
         // Create a DirectDownloader instance
         DirectDownloader fd = new DirectDownloader();
 
@@ -73,21 +85,45 @@ public class SwingTest {
             String fname = files[i].substring( files[i].lastIndexOf( '/' ) + 1 );
 
             progressBar[i] = new JProgressBar();
+            pauseButton[i] = new JButton( PAUSE );
+
+            JPanel panel = new JPanel();
+            BoxLayout box = new BoxLayout( panel, BoxLayout.X_AXIS );
+
+            panel.setLayout( box );
+
+            final DownloadTask dt = new DownloadTask( new URL( files[i] ), new FileOutputStream( fname ),
+                    new ProgressBarUpdator( progressBar[i] ) );
+
+            pauseButton[i].addActionListener( new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    if (dt.isPaused()) {
+                        dt.setPaused( false );
+                        ( (JButton) e.getSource() ).setText( PAUSE );
+                    } else {
+                        dt.setPaused( true );
+                        ( (JButton) e.getSource() ).setText( RESUME );
+                    }
+                }
+            } );
+
             progressBar[i].setStringPainted( true );
             progressBar[i].setBorder( BorderFactory.createTitledBorder( "Downloading " + fname + "..." ) );
-            content.add( progressBar[i] );
 
-            fd.download( new DownloadTask( new URL( files[i] ), new FileOutputStream( fname ), new ProgressBarUpdator(
-                    progressBar[i] ) ) );
+            panel.add( progressBar[i] );
+            panel.add( pauseButton[i] );
 
+            content.add( panel );
+
+            fd.download( dt );
         }
 
-        totalProgressBar.setBorder( BorderFactory.createTitledBorder( "Total" ) );
+        totalProgressBar.setBorder( BorderFactory.createTitledBorder( TOTAL ) );
         totalProgressBar.setStringPainted( true );
         totalProgressBar.setMaximum( 0 );
         content.add( totalProgressBar );
 
-        f.setSize( 300, 200 );
+        f.setSize( 400, 200 );
         f.setVisible( true );
 
         // Start downloading
@@ -97,6 +133,7 @@ public class SwingTest {
 
     // Class that updates the download progress
     class ProgressBarUpdator implements DownloadListener {
+        private static final String DONE = "Done";
         JProgressBar progressBar;
         int size = -1;
 
@@ -110,7 +147,7 @@ public class SwingTest {
                 progressBar.setValue( 100 );
             }
 
-            ( (TitledBorder) progressBar.getBorder() ).setTitle( "Done" );
+            ( (TitledBorder) progressBar.getBorder() ).setTitle( DONE );
             progressBar.repaint();
         }
 

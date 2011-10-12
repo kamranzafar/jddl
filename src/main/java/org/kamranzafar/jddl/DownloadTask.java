@@ -38,6 +38,9 @@ public class DownloadTask {
     private OutputStream outputStream;
     private DownloadListener listener;
 
+    private boolean paused;
+    private final int timeout = 15000;
+
     public DownloadTask(URL url, OutputStream outputStream, DownloadListener listener) {
         this.url = url;
         this.outputStream = outputStream;
@@ -66,5 +69,17 @@ public class DownloadTask {
 
     public void setListener(DownloadListener listener) {
         this.listener = listener;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
+    public int getTimeout() {
+        return timeout;
     }
 }
