@@ -47,19 +47,22 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class SwingTest {
+    // total progress bar
+    private final JProgressBar totalProgressBar = new JProgressBar();
+
     @Test
     public void testSwing() throws IOException, InterruptedException {
         JFrame f = new JFrame( "jddl Swing example" );
         f.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         Container content = f.getContentPane();
-        content.setLayout( new GridLayout( 3, 1 ) );
+        content.setLayout( new GridLayout( 4, 1 ) );
 
         // Some files
         String files[] = { "http://python.org/ftp/python/2.7.2/python-2.7.2.msi",
                 "http://www.python.org/ftp/python/3.2.2/python-3.2.2.msi",
                 "http://www.python.org/ftp/python/3.2.2/python-3.2.2.amd64.msi" };
 
-        // Progress bars
+        // Progress bars for individual file downloads
         JProgressBar[] progressBar = new JProgressBar[3];
 
         // Create a DirectDownloader instance
@@ -79,7 +82,12 @@ public class SwingTest {
 
         }
 
-        f.setSize( 300, 180 );
+        totalProgressBar.setBorder( BorderFactory.createTitledBorder( "Total" ) );
+        totalProgressBar.setStringPainted( true );
+        totalProgressBar.setMaximum( 0 );
+        content.add( totalProgressBar );
+
+        f.setSize( 300, 200 );
         f.setVisible( true );
 
         // Start downloading
@@ -101,6 +109,7 @@ public class SwingTest {
                 progressBar.setIndeterminate( false );
                 progressBar.setValue( 100 );
             }
+
             ( (TitledBorder) progressBar.getBorder() ).setTitle( "Done" );
             progressBar.repaint();
         }
@@ -108,6 +117,11 @@ public class SwingTest {
         public void onStart(int fsize) {
             if (fsize > -1) {
                 progressBar.setMaximum( fsize );
+
+                synchronized (totalProgressBar) {
+                    totalProgressBar.setMaximum( totalProgressBar.getMaximum() + fsize );
+                }
+
                 size = fsize;
             } else {
                 progressBar.setIndeterminate( true );
@@ -119,6 +133,10 @@ public class SwingTest {
                 progressBar.setString( "" + totalDownloaded );
             } else {
                 progressBar.setValue( totalDownloaded );
+
+                synchronized (totalProgressBar) {
+                    totalProgressBar.setValue( totalProgressBar.getValue() + bytes );
+                }
             }
         }
     }
