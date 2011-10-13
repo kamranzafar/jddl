@@ -28,6 +28,8 @@ package org.kamranzafar.jddl;
 
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author kamran
@@ -36,15 +38,20 @@ import java.net.URL;
 public class DownloadTask {
     private URL url;
     private OutputStream outputStream;
-    private DownloadListener listener;
+    private final List<DownloadListener> listeners = new ArrayList<DownloadListener>();
 
     private boolean paused;
     private final int timeout = 15000;
 
+    public DownloadTask(URL url, OutputStream outputStream) {
+        this.url = url;
+        this.outputStream = outputStream;
+    }
+
     public DownloadTask(URL url, OutputStream outputStream, DownloadListener listener) {
         this.url = url;
         this.outputStream = outputStream;
-        this.listener = listener;
+        listeners.add( listener );
     }
 
     public URL getUrl() {
@@ -63,12 +70,20 @@ public class DownloadTask {
         this.outputStream = outputStream;
     }
 
-    public DownloadListener getListener() {
-        return listener;
+    public List<DownloadListener> getListeners() {
+        return listeners;
     }
 
-    public void setListener(DownloadListener listener) {
-        this.listener = listener;
+    public void addListener(DownloadListener listener) {
+        listeners.add( listener );
+    }
+
+    public void removeListener(DownloadListener listener) {
+        listeners.remove( listener );
+    }
+
+    public void removeAllListener() {
+        listeners.clear();
     }
 
     public boolean isPaused() {

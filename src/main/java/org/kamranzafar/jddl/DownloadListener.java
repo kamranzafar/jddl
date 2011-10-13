@@ -31,7 +31,7 @@ package org.kamranzafar.jddl;
  * 
  */
 public interface DownloadListener {
-    public void onStart(int fsize);
+    public void onStart(String fname, int fsize);
 
     public void onUpdate(int bytes, int totalDownloaded);
 

@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
@@ -66,7 +67,10 @@ public class DirectDownloader implements Runnable {
     }
 
     protected class DirectDownloadThread extends Thread {
+        private static final String CD_FNAME = "fname=";
+        private static final String CONTENT_DISPOSITION = "Content-Disposition";
         private static final String GET = "GET";
+
         private final BlockingQueue<DownloadTask> tasks;
 
         public DirectDownloadThread(BlockingQueue<DownloadTask> tasks) {
@@ -83,24 +87,34 @@ public class DirectDownloader implements Runnable {
             conn.connect();
 
             int fsize = conn.getContentLength();
+            String fname;
+
+            String cd = conn.getHeaderField( CONTENT_DISPOSITION );
+
+            if (cd != null) {
+                fname = cd.substring( cd.indexOf( CD_FNAME ) + 1, cd.length() - 1 );
+            } else {
+                String url = dt.getUrl().toString();
+                fname = url.substring( url.lastIndexOf( '/' ) + 1 );
+            }
 
             InputStream is = conn.getInputStream();
 
             OutputStream os = dt.getOutputStream();
-            DownloadListener listener = dt.getListener();
+            List<DownloadListener> listeners = dt.getListeners();
 
             byte[] buff = new byte[bufferSize];
             int res;
 
-            if (listener != null) {
-                listener.onStart( fsize );
+            for (DownloadListener listener : listeners) {
+                listener.onStart( fname, fsize );
             }
 
             int total = 0;
             while (( res = is.read( buff ) ) != -1) {
                 os.write( buff, 0, res );
                 total += res;
-                if (listener != null) {
+                for (DownloadListener listener : listeners) {
                     listener.onUpdate( res, total );
                 }
 
@@ -120,7 +134,7 @@ public class DirectDownloader implements Runnable {
             } catch (IOException e) {
             }
 
-            if (listener != null) {
+            for (DownloadListener listener : listeners) {
                 listener.onComplete();
             }
         }

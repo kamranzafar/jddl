@@ -92,8 +92,8 @@ public class SwingTest {
 
             panel.setLayout( box );
 
-            final DownloadTask dt = new DownloadTask( new URL( files[i] ), new FileOutputStream( fname ),
-                    new ProgressBarUpdator( progressBar[i] ) );
+            final DownloadTask dt = new DownloadTask( new URL( files[i] ), new FileOutputStream( fname ) );
+            dt.addListener( new ProgressBarUpdator( progressBar[i] ) );
 
             pauseButton[i].addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -151,7 +151,7 @@ public class SwingTest {
             progressBar.repaint();
         }
 
-        public void onStart(int fsize) {
+        public void onStart(String fname, int fsize) {
             if (fsize > -1) {
                 progressBar.setMaximum( fsize );
 

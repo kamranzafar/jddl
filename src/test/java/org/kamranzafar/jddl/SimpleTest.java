@@ -48,15 +48,16 @@ public class SimpleTest {
         final String file = "http://python.org/ftp/python/2.7.2/python-2.7.2.msi";
         final String f = "target/" + file.substring( file.lastIndexOf( '/' ) + 1 );
 
-        dd.download( new DownloadTask( new URL( file ), new FileOutputStream( f ), new DownloadListener() {
+        DownloadTask dt = new DownloadTask( new URL( file ), new FileOutputStream( f ) );
+        dt.addListener( new DownloadListener() {
             int size;
 
             public void onUpdate(int bytes, int totalDownloaded) {
                 updateProgress( (double) totalDownloaded / size );
             }
 
-            public void onStart(int size) {
-                System.out.println( "Downloading " + f + " of size " + size );
+            public void onStart(String fname, int size) {
+                System.out.println( "Downloading " + fname + " of size " + size );
                 this.size = size;
                 updateProgress( 0 );
             }
@@ -64,7 +65,9 @@ public class SimpleTest {
             public void onComplete() {
                 System.out.println( "\n" + f + " downloaded" );
             }
-        } ) );
+        } );
+
+        dd.download( dt );
 
         Thread t = new Thread( dd );
         t.start();
