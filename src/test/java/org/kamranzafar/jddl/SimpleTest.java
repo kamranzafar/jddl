@@ -1,7 +1,7 @@
 /**
  *  jddl - Java Direct Download Lib
  *
- *  Copyright (C) 2011  Kamran Zafar
+ *  Copyright (C) 2012  Kamran Zafar
  *
  *  This file is part of Jar Class Loader (JCL).
  *  Jar Class Loader (JCL) is free software: you can redistribute it and/or modify
@@ -41,11 +41,12 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class SimpleTest {
+    DirectDownloader dd = new DirectDownloader();
+
     @Test
     public void testSimple() throws MalformedURLException, FileNotFoundException, InterruptedException {
-        DirectDownloader dd = new DirectDownloader();
-
-        final String file = "http://python.org/ftp/python/2.7.2/python-2.7.2.msi";
+        final Thread t = new Thread( dd );
+        final String file = "http://kamranzafar.org/pub/files/android/kws/kwspro.pdf";
         final String f = "target/" + file.substring( file.lastIndexOf( '/' ) + 1 );
 
         DownloadTask dt = new DownloadTask( new URL( file ), new FileOutputStream( f ) );
@@ -64,12 +65,12 @@ public class SimpleTest {
 
             public void onComplete() {
                 System.out.println( "\n" + f + " downloaded" );
+                dd.shutdown();
             }
         } );
 
         dd.download( dt );
 
-        Thread t = new Thread( dd );
         t.start();
         t.join();
     }

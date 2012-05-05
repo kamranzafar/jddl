@@ -1,7 +1,7 @@
 /**
  *  jddl - Java Direct Download Lib
  *
- *  Copyright (C) 2011  Kamran Zafar
+ *  Copyright (C) 2012  Kamran Zafar
  *
  *  This file is part of Jar Class Loader (JCL).
  *  Jar Class Loader (JCL) is free software: you can redistribute it and/or modify
@@ -71,13 +71,15 @@ public class DirectDownloader implements Runnable {
         private static final String CONTENT_DISPOSITION = "Content-Disposition";
         private static final String GET = "GET";
 
+        private boolean stop = false;
+
         private final BlockingQueue<DownloadTask> tasks;
 
         public DirectDownloadThread(BlockingQueue<DownloadTask> tasks) {
             this.tasks = tasks;
         }
 
-        protected void download(DownloadTask dt) throws IOException {
+        protected void download(DownloadTask dt) throws IOException, InterruptedException {
             HttpURLConnection conn = (HttpURLConnection) dt.getUrl().openConnection(
                     proxy == null ? Proxy.NO_PROXY : proxy );
 
@@ -119,6 +121,13 @@ public class DirectDownloader implements Runnable {
                 }
 
                 synchronized (dt) {
+                    // stop thread
+                    if (stop) {
+                        close( is, os );
+                        throw new InterruptedException();
+                    }
+
+                    // pause thread
                     while (dt.isPaused()) {
                         try {
                             wait();
@@ -128,14 +137,18 @@ public class DirectDownloader implements Runnable {
                 }
             }
 
+            for (DownloadListener listener : listeners) {
+                listener.onComplete();
+            }
+
+            close( is, os );
+        }
+
+        private void close(InputStream is, OutputStream os) {
             try {
                 is.close();
                 os.close();
             } catch (IOException e) {
-            }
-
-            for (DownloadListener listener : listeners) {
-                listener.onComplete();
             }
         }
 
@@ -144,13 +157,17 @@ public class DirectDownloader implements Runnable {
             while (true) {
                 try {
                     download( tasks.take() );
-                } catch (IOException e) {
-                    e.printStackTrace();
                 } catch (InterruptedException e) {
+                    logger.info( "Stopping download thread" );
+                    break;
+                } catch (Exception e) {
                     e.printStackTrace();
-                    return;
                 }
             }
+        }
+
+        public void shutdown() {
+            stop = true;
         }
     }
 
@@ -163,12 +180,20 @@ public class DirectDownloader implements Runnable {
 
         dts = new DirectDownloadThread[poolSize];
 
-        for (DirectDownloadThread t : dts) {
-            t = new DirectDownloadThread( tasks );
-            t.start();
+        for (int i = 0; i < dts.length; i++) {
+            dts[i] = new DirectDownloadThread( tasks );
+            dts[i].start();
         }
 
         logger.info( "Downloader started, waiting for tasks." );
+    }
+
+    public void shutdown() {
+        for (int i = 0; i < dts.length; i++) {
+            if (dts[i] != null) {
+                dts[i].shutdown();
+            }
+        }
     }
 
     public int getPoolSize() {

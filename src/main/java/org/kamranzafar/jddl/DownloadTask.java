@@ -1,7 +1,7 @@
 /**
  *  jddl - Java Direct Download Lib
  *
- *  Copyright (C) 2011  Kamran Zafar
+ *  Copyright (C) 2012  Kamran Zafar
  *
  *  This file is part of Jar Class Loader (JCL).
  *  Jar Class Loader (JCL) is free software: you can redistribute it and/or modify

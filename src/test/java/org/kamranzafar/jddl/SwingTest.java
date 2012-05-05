@@ -1,7 +1,7 @@
 /**
  *  jddl - Java Direct Download Lib
  *
- *  Copyright (C) 2011  Kamran Zafar
+ *  Copyright (C) 2012  Kamran Zafar
  *
  *  This file is part of Jar Class Loader (JCL).
  *  Jar Class Loader (JCL) is free software: you can redistribute it and/or modify
@@ -70,15 +70,20 @@ public class SwingTest {
         String files[] = { "http://python.org/ftp/python/2.7.2/python-2.7.2.msi",
                 "http://www.python.org/ftp/python/3.2.2/python-3.2.2.msi",
                 "http://www.python.org/ftp/python/3.2.2/python-3.2.2.amd64.msi" };
+        // Create a DirectDownloader instance
+        final DirectDownloader fd = new DirectDownloader();
 
         // Progress bars for individual file downloads
         JProgressBar[] progressBar = new JProgressBar[3];
 
         // Pause/Resume buttons
         JButton[] pauseButton = new JButton[3];
-
-        // Create a DirectDownloader instance
-        DirectDownloader fd = new DirectDownloader();
+        JButton stopButton = new JButton( "Stop" );
+        stopButton.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                fd.shutdown();
+            }
+        } );
 
         // Initialize progress bars and create download tasks
         for (int i = 0; i < 3; i++) {
@@ -122,6 +127,7 @@ public class SwingTest {
         totalProgressBar.setStringPainted( true );
         totalProgressBar.setMaximum( 0 );
         content.add( totalProgressBar );
+        content.add( stopButton );
 
         f.setSize( 400, 200 );
         f.setVisible( true );
