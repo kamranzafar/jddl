@@ -42,7 +42,7 @@ public class DownloadTask {
 
     private boolean paused = false;
     private boolean cancelled = false;
-    private final int timeout = 15000;
+    private int timeout = 15000;
 
     public DownloadTask(URL url, OutputStream outputStream) {
         this.url = url;
@@ -105,5 +105,9 @@ public class DownloadTask {
 
     public int getTimeout() {
         return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 }
