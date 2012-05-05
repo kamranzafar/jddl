@@ -12,7 +12,7 @@ jddl is a multi-threaded API capable of parallel-downloading multiple files and 
  DirectDownloader dd = new DirectDownloader();
 
  String file = "http://someserver/somefile.zip"
- String out = "somefile.zip"
+ final String out = "somefile.zip"
 
  // Add files to be downloaded
  dd.download( new DownloadTask( new URL( file ), new FileOutputStream( out ), new DownloadListener() {
@@ -26,6 +26,10 @@ jddl is a multi-threaded API capable of parallel-downloading multiple files and 
 
    public void onComplete() {
       System.out.println( out + " downloaded" );
+   }
+
+   public void onCancel() {
+      System.out.println( out + " cancelled" );
    }
  } ) );
 
