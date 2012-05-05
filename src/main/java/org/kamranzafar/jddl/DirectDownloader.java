@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 public class DirectDownloader implements Runnable {
     private int poolSize = 3;
     private int bufferSize = 2048;
+    private int connectionTimeout = 10000;
 
     private DirectDownloadThread[] dts;
     private Proxy proxy;
@@ -85,6 +86,7 @@ public class DirectDownloader implements Runnable {
                     proxy == null ? Proxy.NO_PROXY : proxy );
 
             conn.setReadTimeout( dt.getTimeout() );
+            conn.setConnectTimeout( connectionTimeout );
             conn.setRequestMethod( GET );
             conn.setDoOutput( true );
             conn.connect();
@@ -237,5 +239,13 @@ public class DirectDownloader implements Runnable {
 
     public void setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
+    }
+
+    public int getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
     }
 }
