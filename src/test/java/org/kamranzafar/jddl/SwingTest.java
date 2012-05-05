@@ -53,6 +53,8 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class SwingTest {
+    private static final String STOP = "Stop";
+    private static final String CANCEL = "Cancel";
     private static final String PAUSE = "Pause";
     private static final String RESUME = "Resume";
     private static final String TOTAL = "Total";
@@ -79,7 +81,11 @@ public class SwingTest {
 
         // Pause/Resume buttons
         JButton[] pauseButton = new JButton[3];
-        JButton stopButton = new JButton( "Stop" );
+
+        // Cancel
+        JButton[] cancelButton = new JButton[3];
+
+        JButton stopButton = new JButton( STOP );
         stopButton.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 fd.cancelAll();
@@ -92,6 +98,7 @@ public class SwingTest {
 
             progressBar[i] = new JProgressBar();
             pauseButton[i] = new JButton( PAUSE );
+            cancelButton[i] = new JButton( CANCEL );
 
             JPanel panel = new JPanel();
             BoxLayout box = new BoxLayout( panel, BoxLayout.X_AXIS );
@@ -113,11 +120,18 @@ public class SwingTest {
                 }
             } );
 
+            cancelButton[i].addActionListener( new ActionListener() {
+                public void actionPerformed(ActionEvent arg0) {
+                    dt.setCancelled( true );
+                }
+            } );
+
             progressBar[i].setStringPainted( true );
             progressBar[i].setBorder( BorderFactory.createTitledBorder( "Downloading " + fname + "..." ) );
 
             panel.add( progressBar[i] );
             panel.add( pauseButton[i] );
+            panel.add( cancelButton[i] );
 
             content.add( panel );
 
@@ -127,8 +141,15 @@ public class SwingTest {
         totalProgressBar.setBorder( BorderFactory.createTitledBorder( TOTAL ) );
         totalProgressBar.setStringPainted( true );
         totalProgressBar.setMaximum( 0 );
-        content.add( totalProgressBar );
-        content.add( stopButton );
+
+        JPanel panel = new JPanel();
+        BoxLayout box = new BoxLayout( panel, BoxLayout.X_AXIS );
+
+        panel.setLayout( box );
+        panel.add( totalProgressBar );
+        panel.add( stopButton );
+
+        content.add( panel );
 
         f.setSize( 400, 200 );
         f.setVisible( true );

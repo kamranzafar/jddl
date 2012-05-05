@@ -123,7 +123,7 @@ public class DirectDownloader implements Runnable {
 
                 synchronized (dt) {
                     // cancel download
-                    if (cancel) {
+                    if (cancel || dt.isCancelled()) {
                         close( is, os );
                         for (DownloadListener listener : listeners) {
                             listener.onCancel();

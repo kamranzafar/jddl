@@ -40,7 +40,8 @@ public class DownloadTask {
     private OutputStream outputStream;
     private final List<DownloadListener> listeners = new ArrayList<DownloadListener>();
 
-    private boolean paused;
+    private boolean paused = false;
+    private boolean cancelled = false;
     private final int timeout = 15000;
 
     public DownloadTask(URL url, OutputStream outputStream) {
@@ -92,6 +93,14 @@ public class DownloadTask {
 
     public void setPaused(boolean paused) {
         this.paused = paused;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
     public int getTimeout() {
