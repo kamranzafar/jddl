@@ -71,7 +71,7 @@ public class DirectDownloader implements Runnable {
         private static final String CONTENT_DISPOSITION = "Content-Disposition";
         private static final String GET = "GET";
 
-        private boolean stop = false;
+        private boolean cancel = false;
 
         private final BlockingQueue<DownloadTask> tasks;
 
@@ -121,9 +121,13 @@ public class DirectDownloader implements Runnable {
                 }
 
                 synchronized (dt) {
-                    // stop thread
-                    if (stop) {
+                    // cancel download
+                    if (cancel) {
                         close( is, os );
+                        for (DownloadListener listener : listeners) {
+                            listener.onCancel();
+                        }
+
                         throw new InterruptedException();
                     }
 
@@ -166,8 +170,8 @@ public class DirectDownloader implements Runnable {
             }
         }
 
-        public void shutdown() {
-            stop = true;
+        public void cancel() {
+            cancel = true;
         }
     }
 
@@ -191,7 +195,7 @@ public class DirectDownloader implements Runnable {
     public void shutdown() {
         for (int i = 0; i < dts.length; i++) {
             if (dts[i] != null) {
-                dts[i].shutdown();
+                dts[i].cancel();
             }
         }
     }

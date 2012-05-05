@@ -30,6 +30,7 @@ import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -98,7 +99,7 @@ public class SwingTest {
             panel.setLayout( box );
 
             final DownloadTask dt = new DownloadTask( new URL( files[i] ), new FileOutputStream( fname ) );
-            dt.addListener( new ProgressBarUpdator( progressBar[i] ) );
+            dt.addListener( new ProgressBarUpdator( fname, progressBar[i] ) );
 
             pauseButton[i].addActionListener( new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -143,8 +144,11 @@ public class SwingTest {
         JProgressBar progressBar;
         int size = -1;
 
-        public ProgressBarUpdator(JProgressBar progressBar) {
+        String fname;
+
+        public ProgressBarUpdator(String fname, JProgressBar progressBar) {
             this.progressBar = progressBar;
+            this.fname = fname;
         }
 
         public void onComplete() {
@@ -181,6 +185,10 @@ public class SwingTest {
                     totalProgressBar.setValue( totalProgressBar.getValue() + bytes );
                 }
             }
+        }
+
+        public void onCancel() {
+            new File( fname ).delete();
         }
     }
 

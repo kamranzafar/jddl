@@ -65,7 +65,10 @@ public class SimpleTest {
 
             public void onComplete() {
                 System.out.println( "\n" + f + " downloaded" );
-                dd.shutdown();
+            }
+
+            public void onCancel() {
+
             }
         } );
 

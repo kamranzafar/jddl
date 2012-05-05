@@ -36,4 +36,6 @@ public interface DownloadListener {
     public void onUpdate(int bytes, int totalDownloaded);
 
     public void onComplete();
+
+    public void onCancel();
 }
