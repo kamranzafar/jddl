@@ -82,7 +82,7 @@ public class SwingTest {
         JButton stopButton = new JButton( "Stop" );
         stopButton.addActionListener( new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                fd.shutdown();
+                fd.cancelAll();
             }
         } );
 
