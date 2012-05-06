@@ -43,7 +43,8 @@ import android.os.Message;
  * @author Kamran
  * 
  *         This is just an template/example that shows how jddl can be used in
- *         Android apps, the following code should updated as per requirements.
+ *         Android apps, the following code should be updated as per
+ *         requirements.
  * 
  */
 public class AndroidExample extends Activity {
@@ -127,22 +128,23 @@ public class AndroidExample extends Activity {
 
         private File downloadFile;
 
-        protected String download(String url) {
+        public String download(String url) {
             fname = url.substring( url.lastIndexOf( '/' ) + 1 );
             downloadFile = new File( downloadDir, fname );
             try {
                 DownloadTask dt = new DownloadTask( new URL( url ), new FileOutputStream( downloadFile ), this );
                 dd.download( dt );
-
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
+                // show progress dialog
                 showDialog( DOWNLOAD_PROGRESS_DIALOG_ID );
             }
             return null;
         }
 
         public void onComplete() {
+            // dismiss progress dialog
             if (mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
@@ -162,10 +164,12 @@ public class AndroidExample extends Activity {
         }
 
         public void onUpdate(int arg0, int arg1) {
+            // update progress dialog
             mProgressDialog.setProgress( ( arg1 * 100 ) / fsize );
         }
 
         public void onCancel() {
+            // delete partly downloaded file if the download is cancelled.
             if (downloadFile.exists()) {
                 downloadFile.delete();
             }
