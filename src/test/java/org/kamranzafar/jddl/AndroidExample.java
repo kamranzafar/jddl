@@ -71,6 +71,9 @@ public class AndroidExample extends Activity {
         // this should be updated as per requirements
 
         downloadDir.mkdirs();
+
+        // start downloading... this can be called from button clicks etc.
+        new DownloadFileAsync().download( "http://www.python.org/ftp/python/3.2.2/python-3.2.2.msi" );
     }
 
     @Override
@@ -94,6 +97,9 @@ public class AndroidExample extends Activity {
         }
     }
 
+    /**
+     * shutdown jddl
+     */
     @Override
     protected void onPause() {
         dd.shutdown();
@@ -102,6 +108,9 @@ public class AndroidExample extends Activity {
         super.onPause();
     }
 
+    /**
+     * start jddl
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -110,6 +119,8 @@ public class AndroidExample extends Activity {
         new Thread( dd ).start();
     }
 
+    // This is an example download listner, that can be used to update UI and to
+    // track download progress
     class DownloadFileAsync implements DownloadListener {
         private int fsize = -1;
         private String fname;
