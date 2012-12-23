@@ -36,78 +36,97 @@ import java.util.List;
  * 
  */
 public class DownloadTask {
-    private URL url;
-    private OutputStream outputStream;
-    private final List<DownloadListener> listeners = new ArrayList<DownloadListener>();
+	private URL url;
+	private OutputStream outputStream;
+	private final List<DownloadListener> listeners = new ArrayList<DownloadListener>();
 
-    private boolean paused = false;
-    private boolean cancelled = false;
-    private int timeout = 15000;
+	private boolean paused = false;
+	private boolean cancelled = false;
+	private int timeout = 15000;
 
-    public DownloadTask(URL url, OutputStream outputStream) {
-        this.url = url;
-        this.outputStream = outputStream;
-    }
+	private Authentication authentication;
 
-    public DownloadTask(URL url, OutputStream outputStream, DownloadListener listener) {
-        this.url = url;
-        this.outputStream = outputStream;
-        listeners.add( listener );
-    }
+	public DownloadTask(URL url, OutputStream outputStream) {
+		this.url = url;
+		this.outputStream = outputStream;
+	}
 
-    public URL getUrl() {
-        return url;
-    }
+	public DownloadTask(URL url, OutputStream outputStream, DownloadListener listener) {
+		this.url = url;
+		this.outputStream = outputStream;
+		listeners.add(listener);
+	}
 
-    public void setUrl(URL url) {
-        this.url = url;
-    }
+	public URL getUrl() {
+		return url;
+	}
 
-    public OutputStream getOutputStream() {
-        return outputStream;
-    }
+	public DownloadTask setUrl(URL url) {
+		this.url = url;
+		return this;
+	}
 
-    public void setOutputStream(OutputStream outputStream) {
-        this.outputStream = outputStream;
-    }
+	public OutputStream getOutputStream() {
+		return outputStream;
+	}
 
-    public List<DownloadListener> getListeners() {
-        return listeners;
-    }
+	public DownloadTask setOutputStream(OutputStream outputStream) {
+		this.outputStream = outputStream;
+		return this;
+	}
 
-    public void addListener(DownloadListener listener) {
-        listeners.add( listener );
-    }
+	public List<DownloadListener> getListeners() {
+		return listeners;
+	}
 
-    public void removeListener(DownloadListener listener) {
-        listeners.remove( listener );
-    }
+	public DownloadTask addListener(DownloadListener listener) {
+		listeners.add(listener);
+		return this;
+	}
 
-    public void removeAllListener() {
-        listeners.clear();
-    }
+	public DownloadTask removeListener(DownloadListener listener) {
+		listeners.remove(listener);
+		return this;
+	}
 
-    public boolean isPaused() {
-        return paused;
-    }
+	public DownloadTask removeAllListener() {
+		listeners.clear();
+		return this;
+	}
 
-    public void setPaused(boolean paused) {
-        this.paused = paused;
-    }
+	public boolean isPaused() {
+		return paused;
+	}
 
-    public boolean isCancelled() {
-        return cancelled;
-    }
+	public DownloadTask setPaused(boolean paused) {
+		this.paused = paused;
+		return this;
+	}
 
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
+	public boolean isCancelled() {
+		return cancelled;
+	}
 
-    public int getTimeout() {
-        return timeout;
-    }
+	public DownloadTask setCancelled(boolean cancelled) {
+		this.cancelled = cancelled;
+		return this;
+	}
 
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public DownloadTask setTimeout(int timeout) {
+		this.timeout = timeout;
+		return this;
+	}
+
+	public Authentication getAuthentication() {
+		return authentication;
+	}
+
+	public DownloadTask setAuthentication(Authentication authentication) {
+		this.authentication = authentication;
+		return this;
+	}
 }

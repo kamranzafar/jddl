@@ -41,59 +41,58 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class SimpleTest {
-    DirectDownloader dd = new DirectDownloader();
+	DirectDownloader dd = new DirectDownloader();
 
-    @Test
-    public void testSimple() throws MalformedURLException, FileNotFoundException, InterruptedException {
-        final Thread t = new Thread( dd );
-        final String file = "http://kamranzafar.org/pub/files/android/kws/kwspro.pdf";
-        final String f = "target/" + file.substring( file.lastIndexOf( '/' ) + 1 );
+	@Test
+	public void testSimple() throws MalformedURLException, FileNotFoundException, InterruptedException {
+		final Thread t = new Thread(dd);
+		final String file = "http://python.org/ftp/python/2.7.2/python-2.7.2.msi";
+		final String f = "target/" + file.substring(file.lastIndexOf('/') + 1);
 
-        DownloadTask dt = new DownloadTask( new URL( file ), new FileOutputStream( f ) );
-        dt.addListener( new DownloadListener() {
-            int size;
+		DownloadTask dt = new DownloadTask(new URL(file), new FileOutputStream(f)).addListener(new DownloadListener() {
+			int size;
 
-            public void onUpdate(int bytes, int totalDownloaded) {
-                updateProgress( (double) totalDownloaded / size );
-            }
+			public void onUpdate(int bytes, int totalDownloaded) {
+				updateProgress((double) totalDownloaded / size);
+			}
 
-            public void onStart(String fname, int size) {
-                System.out.println( "Downloading " + fname + " of size " + size );
-                this.size = size;
-                updateProgress( 0 );
-            }
+			public void onStart(String fname, int size) {
+				System.out.println("Downloading " + fname + " of size " + size);
+				this.size = size;
+				updateProgress(0);
+			}
 
-            public void onComplete() {
-                System.out.println( "\n" + f + " downloaded" );
-            }
+			public void onComplete() {
+				System.out.println("\n" + f + " downloaded");
+			}
 
-            public void onCancel() {
+			public void onCancel() {
 
-            }
-        } );
+			}
+		});
 
-        dd.download( dt );
+		dd.download(dt);
 
-        t.start();
-        t.join();
-    }
+		t.start();
+		t.join();
+	}
 
-    void updateProgress(double progressPercentage) {
-        final int width = 50;
+	void updateProgress(double progressPercentage) {
+		final int width = 50;
 
-        System.out.print( "\r[" );
-        int i = 0;
-        for (; i <= (int) ( progressPercentage * width ); i++) {
-            System.out.print( "." );
-        }
-        for (; i < width; i++) {
-            System.out.print( " " );
-        }
-        System.out.print( "]" );
-    }
+		System.out.print("\r[");
+		int i = 0;
+		for (; i <= (int) (progressPercentage * width); i++) {
+			System.out.print(".");
+		}
+		for (; i < width; i++) {
+			System.out.print(" ");
+		}
+		System.out.print("]");
+	}
 
-    public static void main(String[] args) throws MalformedURLException, FileNotFoundException, InterruptedException {
-        SimpleTest st = new SimpleTest();
-        st.testSimple();
-    }
+	public static void main(String[] args) throws MalformedURLException, FileNotFoundException, InterruptedException {
+		SimpleTest st = new SimpleTest();
+		st.testSimple();
+	}
 }

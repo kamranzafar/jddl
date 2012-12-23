@@ -1,8 +1,8 @@
 h1. Overview
 
-jddl (Java Direct Downloader) is a simple and lightweight java library, which makes it very easy and trivial to direct-download multiple files over HTTP and to track the download progress.
+jddl (Java Direct Downloader) is a simple and lightweight java library, which makes it very easy and trivial to direct-download multiple files over HTTP and to track the download progress. Now supports SSL and basic authentication.
 
-Note: Support for HTTPS and FTP downloads will be added in future releases 
+Note: Support for FTP downloads will be added in future releases 
 
 h1. Usage
 
