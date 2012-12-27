@@ -10,27 +10,24 @@
 		<developer>
 			<id>kamran</id>
 			<name>Kamran Zafar</name>
-			<email>xeus.man@gmail.com
-      </email>
+			<email>xeus.man@gmail.com</email>
 			<organization>Kamran Zafar</organization>
 			<roles>
 				<role>developer</role>
 			</roles>
 		</developer>
 	</developers>
+
 	<licenses>
 		<license>
-			<name>GNU Lesser General Public License</name>
-			<url>LICENSE.txt
-      </url>
+			<name>Apache Software License 2.0</name>
+			<url>LICENSE.txt</url>
 		</license>
 	</licenses>
 
 	<build>
-		<sourceDirectory>${basedir}/src/main/java
-        </sourceDirectory>
-		<testSourceDirectory>${basedir}/src/test/java
-        </testSourceDirectory>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+		<testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

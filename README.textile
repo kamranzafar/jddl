@@ -2,7 +2,7 @@ h1. Overview
 
 jddl (Java Direct Downloader) is a simple and lightweight java library, which makes it very easy and trivial to direct-download multiple files over HTTP and to track the download progress. Now supports SSL and basic authentication.
 
-Note: Support for FTP downloads will be added in future releases 
+Note: Support for FTP downloads will be added in future releases
 
 h1. Usage
 
@@ -52,4 +52,3 @@ Below are some comprehensive examples of using jddl.
 * "Console example":https://github.com/kamranzafar/jddl/blob/master/src/test/java/org/kamranzafar/jddl/SimpleTest.java
 * "Swing example":https://github.com/kamranzafar/jddl/blob/master/src/test/java/org/kamranzafar/jddl/SwingTest.java
 * "Android example":https://github.com/kamranzafar/jddl/blob/master/src/test/java/org/kamranzafar/jddl/AndroidExample.java
-
